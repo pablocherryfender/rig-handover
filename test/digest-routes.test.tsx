@@ -66,6 +66,7 @@ describe('digest route tests (2a and 2b)', () => {
       expect(res.status).toBe(200);
       const html = await res.text();
       expect(html).toContain('rig/rotate-logs');
+      expect(html).toContain('1 line could not be read');
     });
   });
 

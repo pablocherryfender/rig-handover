@@ -29,6 +29,11 @@ export function DigestView({ digest }: { digest: DigestNight }) {
           </tbody>
         </table>
       )}
+      {digest.badLines > 0 && (
+        <p class="mute">
+          {digest.badLines} {digest.badLines === 1 ? 'line could not be read' : 'lines could not be read'}
+        </p>
+      )}
     </>
   );
 }
