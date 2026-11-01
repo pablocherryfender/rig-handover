@@ -84,7 +84,7 @@ export function readNight(runsDir: string, night: string): DigestNight | null {
 
   return {
     night: nightName,
-    rows: Array.from(rowsMap.values()),
+    rows: Array.from(rowsMap.values()).sort((a, b) => a.job.localeCompare(b.job)),
     badLines,
   };
 }
