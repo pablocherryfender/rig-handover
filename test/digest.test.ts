@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { createApp } from '../src/app.js';
 import { readNight } from '../src/digest/types.js';
+
+const config = { adapter: 'shim', installed: '2026-10-29T14:06:00+01:00', beatEverySeconds: 60, runsDir: 'runs' };
 
 describe('run log reader', () => {
   it('reads runs/2026-10-28.jsonl (5 jobs, 1 bad line)', () => {
@@ -86,5 +89,31 @@ describe('run log reader', () => {
   it('returns null for non-existent night file', () => {
     const result = readNight('runs', '1999-01-01');
     expect(result).toBeNull();
+  });
+});
+
+describe('digest JSON API', () => {
+  it('GET /api/digest/2026-10-28 returns digest JSON with jobs sorted by name', async () => {
+    const res = await createApp(config).request('/api/digest/2026-10-28');
+    expect(res.status).toBe(200);
+
+    const json = await res.json();
+    expect(json.night).toBe('2026-10-28');
+    expect(json.badLines).toBe(1);
+    expect(json.rows).toHaveLength(5);
+
+    const jobNames = json.rows.map((r: { job: string }) => r.job);
+    expect(jobNames).toEqual([
+      'digest/render',
+      'fixtures/refresh',
+      'lane/sync',
+      'notes/backup',
+      'rig/rotate-logs',
+    ]);
+  });
+
+  it('GET /api/digest/1999-01-01 returns 404', async () => {
+    const res = await createApp(config).request('/api/digest/1999-01-01');
+    expect(res.status).toBe(404);
   });
 });
