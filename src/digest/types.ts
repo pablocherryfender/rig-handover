@@ -19,6 +19,4 @@ export type DigestNight = {
 
 export type DigestResult = DigestNight;
 
-export function readNight(_runsDir: string, _night: string): DigestNight | null {
-  throw new Error('Not implemented');
-}
+export { readNight } from './reader.js';
